@@ -66,6 +66,20 @@ function formSubmit (event) {
 	} else if (!msgValidation()) {
 		alert('Error! Mensaje incompleto o invalido');				
 	} else {
-		event.target.submit();
+
+		var queryString;
+
+		for (var i = 0; i < event.target.length; i++) {
+			if (event.target[i].type != 'submit') {
+				queryString += event.target[i].name + '=' + event.target[i].value + '&';
+			}
+		}
+
+		var send_ajax = new XMLHttpRequest();
+			send_ajax.open(method, URL, true);
+		send_ajax.setRequestHeader("Content-type", "application/json");
+		send_ajax.send(data);
+		// event.target.submit();
+		console.log(queryString);
 	}
 };
