@@ -52,8 +52,8 @@ function clearClass (elem) {
 };
 
 // Exercise 5
-
-var form = document.querySelector('.contact-form form');
+var form_container = document.querySelector('.contact-form');
+var form = form_container.querySelector('form');
 form.addEventListener('submit', formSubmit);
 
 function formSubmit (event) {
@@ -66,6 +66,24 @@ function formSubmit (event) {
 	} else if (!msgValidation()) {
 		alert('Error! Mensaje incompleto o invalido');				
 	} else {
-		event.target.submit();
+		var queryString;
+
+		for (var i = 0; i < event.target.length; i++) {
+			if (event.target[i].type != 'submit') {
+				queryString += `${event.target[i].name}=${event.target[i].value}&`;
+			}
+		}
+
+		var ajax = new XMLHttpRequest();
+		ajax.open(event.target.method, event.target.action);
+		ajax.setRequestHeader("Content-Type","application/x-www-form-urlencoded");
+		ajax.addEventListener("load", (e) => {
+			if (ajax.status == 200) form_container.innerHTML = "Gracias por su consulta, responderemos a la brevedad :)";
+			else form_container.innerHTML = 'Ocurrió un error, escribanos a <a href="mailto:info@educacionit.com">info@educacionit.com</a> :(';
+		  console.log(ajax.status);
+		});
+		ajax.send(queryString);
+
+		// event.target.submit();
 	}
 };
